@@ -1,7 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 import '../core/registro_tema.dart';
 import '../models/registro_borrador.dart';
+import '../services/levantamiento_service.dart';
 import '../utils/responsive.dart';
 import '../widgets/barra_navegacion_registro.dart';
 import '../widgets/dialogos_registro.dart';
@@ -25,6 +27,9 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
   final TextEditingController _observacionesController =
       TextEditingController();
   final TextEditingController _accionesController = TextEditingController();
+  final LevantamientoService _service = LevantamientoService();
+
+  bool _enviando = false;
 
   RegistroTema get _tema => RegistroTema.de(widget.borrador.idTipoFactor);
 
@@ -71,6 +76,8 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
 
   /// Ambos comentarios son opcionales; solo se pide confirmar el envío.
   Future<void> _continuar() async {
+    if (_enviando) return;
+
     final confirmado = await showConfirmacionDialog(
       context,
       titulo: 'Confirmar',
@@ -87,12 +94,62 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
       acciones: acciones.isEmpty ? null : acciones,
     );
 
-    // TODO: enviar el registro y pasar el título con el conteo real.
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => ResumenMovimientosScreen(borrador: borrador),
+    setState(() {
+      _enviando = true;
+    });
+    _mostrarCargando();
+
+    try {
+      final mensaje = await _service.registrar(borrador);
+      if (!mounted) return;
+
+      Navigator.of(context).pop(); // cierra el indicador de carga
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ResumenMovimientosScreen(
+            borrador: borrador,
+            // El mensaje trae el conteo de levantamientos del usuario.
+            titulo: (mensaje == null || mensaje.trim().isEmpty)
+                ? '¡Ya terminaste!'
+                : mensaje,
+          ),
+        ),
+      );
+    } catch (error) {
+      if (!mounted) return;
+      Navigator.of(context).pop();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(_mensajeDeError(error))));
+    } finally {
+      if (mounted) {
+        setState(() {
+          _enviando = false;
+        });
+      }
+    }
+  }
+
+  void _mostrarCargando() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const PopScope(
+        canPop: false,
+        child: Center(child: CircularProgressIndicator(color: Colors.white)),
       ),
     );
+  }
+
+  /// Si el backend explica el fallo se muestra tal cual.
+  String _mensajeDeError(Object error) {
+    final data = error is DioException ? error.response?.data : null;
+    if (data is Map<String, dynamic>) {
+      final mensaje = data['mensaje'];
+      if (mensaje is String && mensaje.trim().isNotEmpty) return mensaje;
+    }
+    if (data is String && data.trim().isNotEmpty) return data;
+    return 'No se pudo enviar el registro. Intenta de nuevo.';
   }
 
   @override
@@ -205,10 +262,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                       minLines: null,
                       textAlignVertical: TextAlignVertical.top,
                       cursorColor: _tema.acento,
-                      style: const TextStyle(
-                        color: _textoOscuro,
-                        fontSize: 16,
-                      ),
+                      style: const TextStyle(color: _textoOscuro, fontSize: 16),
                       decoration: const InputDecoration(
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(vertical: 8),

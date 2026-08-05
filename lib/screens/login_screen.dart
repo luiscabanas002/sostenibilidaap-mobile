@@ -8,6 +8,7 @@ import '../widgets/option_picker_dialog.dart';
 import 'avisos_screen.dart';
 import 'formulario_registro_screen.dart';
 import 'notificaciones_screen.dart';
+import 'registro_usuario_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -125,6 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (_) => FormularioRegistroScreen(
             usuario: usuario,
             idTipoFactor: idTipoFactor,
+            division: _selectedDivision!,
           ),
         ),
       );
@@ -204,8 +206,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Expanded(
                                       child: _buildPillButton(
                                         label: 'REGÍSTRATE',
-                                        onPressed: () {
-                                        },
+                                        onPressed: () => Navigator.of(
+                                          context,
+                                        ).pushNamed(
+                                          RegistroUsuarioScreen.routeName,
+                                        ),
                                       ),
                                     ),
                                     const SizedBox(width: 24),

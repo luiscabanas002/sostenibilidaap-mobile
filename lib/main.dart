@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'screens/avisos_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/notificaciones_screen.dart';
+import 'screens/registro_usuario_screen.dart';
 import 'screens/splash_screen.dart';
 import 'services/push_service.dart';
 import 'utils/responsive.dart';
@@ -39,6 +40,7 @@ class MainApp extends StatelessWidget {
         LoginScreen.routeName: (_) => const LoginScreen(),
         NotificacionesScreen.routeName: (_) => const NotificacionesScreen(),
         AvisosScreen.routeName: (_) => const AvisosScreen(),
+        RegistroUsuarioScreen.routeName: (_) => const RegistroUsuarioScreen(),
       },
     );
   }

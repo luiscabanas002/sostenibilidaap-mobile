@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class RegistroTema {
   const RegistroTema({
     required this.titulo,
+    required this.tipoLevantamiento,
     required this.fondo,
     required this.fondoSalida,
     required this.gridTitulo,
@@ -17,6 +18,9 @@ class RegistroTema {
   });
 
   final String titulo;
+
+  /// Valor de `tipo_levantamiento` que decide la tabla destino en el backend.
+  final String tipoLevantamiento;
 
   /// Prefijo del asset de fondo (se completa con _mobile/_tablet).
   final String fondo;
@@ -48,6 +52,7 @@ class RegistroTema {
   static const Map<int, RegistroTema> _porTipoFactor = {
     1: RegistroTema(
       titulo: 'Registro TOC',
+      tipoLevantamiento: 'TOC',
       fondo: 'fondo_naranja2',
       fondoSalida: 'ic_salir_naranja',
       gridTitulo: 'Comportamiento',
@@ -60,6 +65,7 @@ class RegistroTema {
     ),
     2: RegistroTema(
       titulo: 'Registro de Condiciones',
+      tipoLevantamiento: 'CONDICIONES',
       fondo: 'fondo_rojo2',
       fondoSalida: 'ic_salir_rojo',
       gridTitulo: 'Condiciones',
@@ -72,6 +78,7 @@ class RegistroTema {
     ),
     3: RegistroTema(
       titulo: 'Registro Ambiental',
+      tipoLevantamiento: 'AMBIENTAL',
       fondo: 'fondo_verde2',
       fondoSalida: 'ic_salir_verde',
       gridTitulo: 'Comportamiento',

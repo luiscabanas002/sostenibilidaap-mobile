@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/media.dart';
 import '../core/registro_tema.dart';
+import '../models/division.dart';
 import '../models/registro_borrador.dart';
 import '../models/usuario.dart';
 import '../utils/responsive.dart';
@@ -17,12 +18,14 @@ class FormularioRegistroScreen extends StatefulWidget {
     super.key,
     required this.usuario,
     required this.idTipoFactor,
+    required this.division,
   });
 
   static const routeName = '/formulario-registro';
 
   final Usuario usuario;
   final int idTipoFactor;
+  final Division division;
 
   @override
   State<FormularioRegistroScreen> createState() =>
@@ -179,6 +182,7 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
           borrador: RegistroBorrador(
             usuario: widget.usuario,
             idTipoFactor: widget.idTipoFactor,
+            division: widget.division,
             fecha: _fecha,
             sucursal: _sucursal!,
             tipoComportamiento: _tipoComportamiento!,

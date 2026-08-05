@@ -1,3 +1,4 @@
+import 'division.dart';
 import 'usuario.dart';
 
 /// Datos capturados en el formulario de registro, listos para la
@@ -6,6 +7,7 @@ class RegistroBorrador {
   const RegistroBorrador({
     required this.usuario,
     required this.idTipoFactor,
+    required this.division,
     required this.fecha,
     required this.sucursal,
     required this.tipoComportamiento,
@@ -22,6 +24,7 @@ class RegistroBorrador {
     return RegistroBorrador(
       usuario: usuario,
       idTipoFactor: idTipoFactor,
+      division: division,
       fecha: fecha,
       sucursal: sucursal,
       tipoComportamiento: tipoComportamiento,
@@ -36,6 +39,9 @@ class RegistroBorrador {
 
   final Usuario usuario;
   final int idTipoFactor;
+
+  /// División elegida en el login; de ahí salen id_division y aplicaSucursal.
+  final Division division;
   final DateTime fecha;
   final Sucursal sucursal;
   final String tipoComportamiento;

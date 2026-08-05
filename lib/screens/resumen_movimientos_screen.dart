@@ -9,7 +9,7 @@ class ResumenMovimientosScreen extends StatelessWidget {
   const ResumenMovimientosScreen({
     super.key,
     required this.borrador,
-    this.titulo = '¡Llevas 3 levantamientos!',
+    this.titulo = '¡Ya terminaste!',
     this.mensaje =
         'Gracias por hacer de Bepensa un lugar más seguro para trabajar.',
   });
@@ -18,7 +18,7 @@ class ResumenMovimientosScreen extends StatelessWidget {
 
   final RegistroBorrador borrador;
 
-  /// Lo enviará la pantalla de comentarios cuando exista el conteo real.
+  /// Lo manda comentarios con el mensaje que devuelve el backend.
   final String titulo;
   final String mensaje;
 
