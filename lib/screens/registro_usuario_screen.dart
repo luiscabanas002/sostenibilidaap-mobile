@@ -8,6 +8,7 @@ import '../models/catalogos_registro.dart';
 import '../models/division.dart';
 import '../models/proceso.dart';
 import '../services/registro_service.dart';
+import '../widgets/campos_formulario.dart';
 import '../widgets/lista_picker_dialog.dart';
 import '../widgets/pantalla_naranja.dart';
 
@@ -415,39 +416,10 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
               onTap: () => _seleccionarPais(catalogos.paises),
             ),
             const SizedBox(height: 8),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _enviando ? null : _registrar,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: kAcenteNaranja,
-                  foregroundColor: Colors.white,
-                  disabledBackgroundColor: kAcenteNaranja,
-                  disabledForegroundColor: Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(28),
-                  ),
-                ),
-                child: _enviando
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text(
-                        'REGISTRARME',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: 1,
-                        ),
-                      ),
-              ),
+            BotonAccion(
+              texto: 'REGISTRARME',
+              cargando: _enviando,
+              onPressed: _registrar,
             ),
           ],
         ),
@@ -474,7 +446,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
             : TextCapitalization.words,
         cursorColor: kAcenteNaranja,
         style: const TextStyle(color: Colors.black87, fontSize: 17),
-        decoration: _decoracion(etiqueta: etiqueta, icono: icono),
+        decoration: decoracionCampo(etiqueta: etiqueta, icono: icono),
         // Se revalida en cada build para que el aviso se borre solo cuando
         // el temporizador apaga _mostrarErrores.
         autovalidateMode: AutovalidateMode.always,
@@ -496,85 +468,17 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
     bool habilitado = true,
     bool cargando = false,
   }) {
-    // Si el campo está bloqueado el error lo muestra el nivel anterior.
-    final error = _mostrarErrores && habilitado && valor == null
-        ? 'Campo obligatorio'
-        : null;
-
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        // El teclado lo cierra showListaPickerDialog al abrirse.
-        onTap: habilitado && !cargando ? onTap : null,
-        child: InputDecorator(
-          isEmpty: valor == null,
-          decoration: _decoracion(
-            etiqueta: etiqueta,
-            icono: icono,
-            habilitado: habilitado,
-            errorText: error,
-            sufijo: cargando
-                ? const Padding(
-                    padding: EdgeInsets.all(12),
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    ),
-                  )
-                : Icon(
-                    Icons.arrow_drop_down,
-                    color: habilitado ? Colors.black87 : Colors.black26,
-                  ),
-          ),
-          // Siempre hay texto (vacío si no hay selección) para que todos los
-          // campos midan lo mismo con y sin valor.
-          child: Text(
-            valor ?? '',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: const TextStyle(color: Colors.black87, fontSize: 17),
-          ),
-        ),
-      ),
-    );
-  }
-
-  InputDecoration _decoracion({
-    required String etiqueta,
-    required IconData icono,
-    Widget? sufijo,
-    String? errorText,
-    bool habilitado = true,
-  }) {
-    final colorTexto = habilitado ? Colors.black54 : Colors.black26;
-
-    return InputDecoration(
-      labelText: etiqueta,
-      errorText: errorText,
-      labelStyle: TextStyle(color: colorTexto, fontSize: 17),
-      prefixIcon: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Icon(
-          icono,
-          color: habilitado ? Colors.black : Colors.black26,
-          size: 26,
-        ),
-      ),
-      suffixIcon: sufijo,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: BorderSide(
-          color: habilitado ? Colors.black38 : Colors.black12,
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(16),
-        borderSide: const BorderSide(color: Colors.black87, width: 1.5),
-      ),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+    return CampoSelector(
+      etiqueta: etiqueta,
+      icono: icono,
+      valor: valor,
+      onTap: onTap,
+      habilitado: habilitado,
+      cargando: cargando,
+      // Si el campo está bloqueado el error lo muestra el nivel anterior.
+      error: _mostrarErrores && habilitado && valor == null
+          ? 'Campo obligatorio'
+          : null,
     );
   }
 }

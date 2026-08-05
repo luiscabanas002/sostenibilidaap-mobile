@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../core/registro_tema.dart';
 import '../models/registro_borrador.dart';
 import '../services/levantamiento_service.dart';
+import '../services/offline_store.dart';
 import '../utils/responsive.dart';
 import '../widgets/barra_navegacion_registro.dart';
 import '../widgets/dialogos_registro.dart';
@@ -100,7 +101,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
     _mostrarCargando();
 
     try {
-      final mensaje = await _service.registrar(borrador);
+      final mensaje = await _guardarOEnviar(borrador);
       if (!mounted) return;
 
       Navigator.of(context).pop(); // cierra el indicador de carga
@@ -112,6 +113,9 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
             titulo: (mensaje == null || mensaje.trim().isEmpty)
                 ? '¡Ya terminaste!'
                 : mensaje,
+            mensaje: OfflineStore.instance.activo
+                ? 'Sincroniza desde Modo offline cuando tengas conexión.'
+                : 'Gracias por hacer de Bepensa un lugar más seguro para trabajar.',
           ),
         ),
       );
@@ -128,6 +132,16 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
         });
       }
     }
+  }
+
+  /// Con el modo offline activo el levantamiento se guarda en el dispositivo
+  /// y se sube después desde la pantalla de modo offline.
+  Future<String?> _guardarOEnviar(RegistroBorrador borrador) async {
+    if (!OfflineStore.instance.activo) return _service.registrar(borrador);
+
+    final cuerpo = await _service.construirCuerpo(borrador);
+    await OfflineStore.instance.agregarPendiente(cuerpo);
+    return 'Guardado en el dispositivo';
   }
 
   void _mostrarCargando() {

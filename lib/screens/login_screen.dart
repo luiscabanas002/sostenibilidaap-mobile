@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../models/division.dart';
 import '../services/division_service.dart';
+import '../services/offline_store.dart';
 import '../services/usuario_service.dart';
 import '../utils/responsive.dart';
 import '../widgets/option_picker_dialog.dart';
 import 'avisos_screen.dart';
 import 'formulario_registro_screen.dart';
+import 'modo_offline_screen.dart';
 import 'notificaciones_screen.dart';
 import 'registro_usuario_screen.dart';
 
@@ -35,6 +37,14 @@ class _LoginScreenState extends State<LoginScreen> {
     'Condiciones Ambientales': 3,
   };
 
+  /// Marcador para el modo offline: la división real se define al sincronizar.
+  static const Division _divisionOffline = Division(
+    idDivision: -1,
+    descripcion: 'Modo offline',
+    aplicaCodigo: 0,
+    aplicaSucursal: 1,
+  );
+
   final DivisionService _divisionService = DivisionService();
   final UsuarioService _usuarioService = UsuarioService();
   final TextEditingController _codeController = TextEditingController();
@@ -50,6 +60,16 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _codeController.dispose();
     super.dispose();
+  }
+
+  /// Al volver se refresca porque el modo pudo cambiar dentro de la pantalla.
+  Future<void> _abrirModoOffline() async {
+    await Navigator.of(context).pushNamed(ModoOfflineScreen.routeName);
+    if (!mounted) return;
+    setState(() {
+      _selectedDivision = null;
+      _codeController.clear();
+    });
   }
 
   Future<void> _showRegisterTypePicker() async {
@@ -107,18 +127,27 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login({required String clave, required String action}) async {
     if (_authAction != null) return;
 
+    final catalogoOffline = OfflineStore.instance.activo
+        ? OfflineStore.instance.catalogo
+        : null;
+
     final idTipoFactor = _tipoFactorIds[_selectedType];
     final idDivision = _selectedDivision?.idDivision;
-    if (idTipoFactor == null || idDivision == null) return;
+    if (idTipoFactor == null) return;
+    if (catalogoOffline == null && idDivision == null) return;
 
     setState(() => _authAction = action);
 
     try {
-      final usuario = await _usuarioService.login(
-        idTipoFactor: idTipoFactor,
-        idDivision: idDivision,
-        clave: clave,
-      );
+      // En modo offline no se valida contra el servidor: se entra con el
+      // catálogo local y el usuario real se pide al sincronizar.
+      final usuario =
+          catalogoOffline ??
+          await _usuarioService.login(
+            idTipoFactor: idTipoFactor,
+            idDivision: idDivision!,
+            clave: clave,
+          );
 
       if (!mounted) return;
       Navigator.of(context).push(
@@ -126,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
           builder: (_) => FormularioRegistroScreen(
             usuario: usuario,
             idTipoFactor: idTipoFactor,
-            division: _selectedDivision!,
+            division: _selectedDivision ?? _divisionOffline,
           ),
         ),
       );
@@ -139,7 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Ocurrió un error al iniciar sesión. Intenta de nuevo.'),
+          content: Text(
+            'Ocurrió un error al iniciar sesión. Intenta de nuevo.',
+          ),
         ),
       );
     } finally {
@@ -195,6 +226,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     letterSpacing: 2,
                                   ),
                                 ),
+                                if (OfflineStore.instance.activo)
+                                  _buildAvisoOffline(),
                                 const SizedBox(height: 12),
                                 if (_selectedType == null)
                                   _buildRegisterTypeDropdown()
@@ -206,19 +239,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Expanded(
                                       child: _buildPillButton(
                                         label: 'REGÍSTRATE',
-                                        onPressed: () => Navigator.of(
-                                          context,
-                                        ).pushNamed(
-                                          RegistroUsuarioScreen.routeName,
-                                        ),
+                                        onPressed: () =>
+                                            Navigator.of(context).pushNamed(
+                                              RegistroUsuarioScreen.routeName,
+                                            ),
                                       ),
                                     ),
                                     const SizedBox(width: 24),
                                     Expanded(
                                       child: _buildPillButton(
                                         label: 'MODO OFFLINE',
-                                        onPressed: () {
-                                        },
+                                        onPressed: _abrirModoOffline,
                                       ),
                                     ),
                                   ],
@@ -231,11 +262,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                         child: _buildIconAction(
                                           icon: Icons.notifications,
                                           label: 'Notificaciones',
-                                          onTap: () => Navigator.of(
-                                            context,
-                                          ).pushNamed(
-                                            NotificacionesScreen.routeName,
-                                          ),
+                                          onTap: () =>
+                                              Navigator.of(context).pushNamed(
+                                                NotificacionesScreen.routeName,
+                                              ),
                                         ),
                                       ),
                                     ),
@@ -272,6 +302,27 @@ class _LoginScreenState extends State<LoginScreen> {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAvisoOffline() {
+    return const Padding(
+      padding: EdgeInsets.only(top: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.cloud_off, color: Colors.white, size: 18),
+          SizedBox(width: 6),
+          Text(
+            'Modo offline activo',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -325,23 +376,30 @@ class _LoginScreenState extends State<LoginScreen> {
             value: _selectedType,
             onTap: _showRegisterTypePicker,
           ),
-          const SizedBox(height: 16),
-          _buildPickerField(
-            label: 'División',
-            icon: Icons.factory,
-            value: _selectedDivision?.descripcion,
-            onTap: _showDivisionPicker,
-            loading: _loadingDivisions,
-          ),
-          if (_selectedDivision != null) ...[
-            if (_selectedDivision!.aplicaCodigo == 1) ...[
-              const SizedBox(height: 12),
-              _buildCodeField(),
-              const SizedBox(height: 12),
-              _buildValidateCodeButton(),
-            ],
+          // Sin conexión basta el tipo de registro: la división y la clave
+          // se definen hasta la sincronización.
+          if (OfflineStore.instance.activo) ...[
             const SizedBox(height: 12),
-            _buildGuestButton(),
+            _buildOfflineButton(),
+          ] else ...[
+            const SizedBox(height: 16),
+            _buildPickerField(
+              label: 'División',
+              icon: Icons.factory,
+              value: _selectedDivision?.descripcion,
+              onTap: _showDivisionPicker,
+              loading: _loadingDivisions,
+            ),
+            if (_selectedDivision != null) ...[
+              const SizedBox(height: 12),
+              if (_selectedDivision!.aplicaCodigo == 1) ...[
+                _buildCodeField(),
+                const SizedBox(height: 12),
+                _buildValidateCodeButton(),
+                const SizedBox(height: 12),
+              ],
+              _buildGuestButton(),
+            ],
           ],
         ],
       ),
@@ -394,6 +452,16 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  Widget _buildOfflineButton() {
+    return _buildAuthButton(
+      label: 'INGRESAR EN MODO OFFLINE',
+      loading: _authAction == 'offline',
+      onPressed: _authAction == null
+          ? () => _login(clave: UsuarioService.claveInvitado, action: 'offline')
+          : null,
+    );
+  }
+
   Widget _buildGuestButton() {
     return _buildAuthButton(
       label: 'INGRESAR COMO INVITADO',
@@ -416,8 +484,9 @@ class _LoginScreenState extends State<LoginScreen> {
         style: ElevatedButton.styleFrom(
           backgroundColor: _accentOrange,
           foregroundColor: Colors.white,
-          disabledBackgroundColor:
-              loading ? _accentOrange : Colors.grey.shade300,
+          disabledBackgroundColor: loading
+              ? _accentOrange
+              : Colors.grey.shade300,
           disabledForegroundColor: loading ? Colors.white : Colors.grey,
           elevation: 0,
           padding: const EdgeInsets.symmetric(vertical: 16),
