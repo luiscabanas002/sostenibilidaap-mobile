@@ -12,6 +12,7 @@ import '../widgets/dictado_dialog.dart';
 import '../widgets/option_picker_dialog.dart';
 import '../widgets/sucursal_picker_dialog.dart';
 import 'comentarios_screen.dart';
+import 'splash_screen.dart';
 
 class FormularioRegistroScreen extends StatefulWidget {
   const FormularioRegistroScreen({
@@ -50,8 +51,16 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
   TipoFactor? get _tipoFactor =>
       widget.usuario.tipoFactorDe(widget.idTipoFactor);
 
+  /// El catálogo offline trae juntas las áreas de los tres tipos, así que se
+  /// filtran por `tipo`. Online ya vienen filtradas y el filtro no cambia nada;
+  /// si no coincidiera ninguna se muestran todas para no dejar la lista vacía.
   List<Area> get _areas {
-    final areas = [...?widget.usuario.info?.areas];
+    final todas = [...?widget.usuario.info?.areas];
+    final delTipo = todas
+        .where((area) => area.tipo == _config.tipoArea)
+        .toList();
+
+    final areas = delTipo.isEmpty ? todas : delTipo;
     areas.sort((a, b) => a.numPosicion.compareTo(b.numPosicion));
     return areas;
   }
@@ -153,7 +162,11 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
       textoPositivo: 'SALIR',
     );
 
-    if (salir && mounted) Navigator.of(context).pop();
+    if (salir && mounted) {
+      Navigator.of(
+        context,
+      ).pushNamedAndRemoveUntil(SplashScreen.routeName, (route) => false);
+    }
   }
 
   void _continuar() {

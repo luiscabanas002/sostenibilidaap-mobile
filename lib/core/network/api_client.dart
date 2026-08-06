@@ -10,13 +10,19 @@ class ApiClient {
 
   static final Dio dio = _build();
 
+  /// Host base del backend, sin sufijo `/api`. Es la fuente única de verdad
+  /// para armar tanto [baseUrl] como la URL base de recursos estáticos
+  /// (ver [kMediaBaseUrl] en `core/media.dart`).
+  ///
   /// El emulador de Android expone el localhost de la máquina en 10.0.2.2.
-  static String get baseUrl {
+  static String get serverBaseUrl {
     if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:5093/api';
+      return 'http://10.0.2.2:5093';
     }
-    return 'http://localhost:5093/api';
+    return 'http://localhost:5093';
   }
+
+  static String get baseUrl => '$serverBaseUrl/api';
 
   static Dio _build() {
     final dio = Dio(

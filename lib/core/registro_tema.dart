@@ -6,6 +6,7 @@ class RegistroTema {
   const RegistroTema({
     required this.titulo,
     required this.tipoLevantamiento,
+    required this.tipoArea,
     required this.fondo,
     required this.fondoSalida,
     required this.gridTitulo,
@@ -21,6 +22,9 @@ class RegistroTema {
 
   /// Valor de `tipo_levantamiento` que decide la tabla destino en el backend.
   final String tipoLevantamiento;
+
+  /// Valor del campo `tipo` de las áreas de observación de este tipo.
+  final String tipoArea;
 
   /// Prefijo del asset de fondo (se completa con _mobile/_tablet).
   final String fondo;
@@ -53,6 +57,7 @@ class RegistroTema {
     1: RegistroTema(
       titulo: 'Registro TOC',
       tipoLevantamiento: 'TOC',
+      tipoArea: 'ACTO INSEGURO',
       fondo: 'fondo_naranja2',
       fondoSalida: 'ic_salir_naranja',
       gridTitulo: 'Comportamiento',
@@ -66,6 +71,7 @@ class RegistroTema {
     2: RegistroTema(
       titulo: 'Registro de Condiciones',
       tipoLevantamiento: 'CONDICIONES',
+      tipoArea: 'CONDICIONES',
       fondo: 'fondo_rojo2',
       fondoSalida: 'ic_salir_rojo',
       gridTitulo: 'Condiciones',
@@ -79,6 +85,7 @@ class RegistroTema {
     3: RegistroTema(
       titulo: 'Registro Ambiental',
       tipoLevantamiento: 'AMBIENTAL',
+      tipoArea: 'AMBIENTAL',
       fondo: 'fondo_verde2',
       fondoSalida: 'ic_salir_verde',
       gridTitulo: 'Comportamiento',
