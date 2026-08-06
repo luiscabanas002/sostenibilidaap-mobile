@@ -38,7 +38,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'SostenibilidApp',
+      title: 'Sostenibilidapp',
       debugShowCheckedModeBanner: false,
       initialRoute: SplashScreen.routeName,
       routes: {
