@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../utils/teclado.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 
@@ -10,6 +12,9 @@ Future<String?> showDictadoDialog(
   required Color acento,
   required String iconoMicrofono,
 }) {
+  // El dictado se abre desde un botón junto a un input.
+  ocultarTeclado();
+
   return showDialog<String>(
     context: context,
     barrierDismissible: false,
@@ -68,9 +73,8 @@ class _DictadoDialogState extends State<_DictadoDialog> {
   Future<void> _preparar() async {
     final disponible = await _speech.initialize(
       onStatus: _onStatus,
-      onError: (error) => _mostrarError(
-        'No se pudo reconocer la voz. Intenta de nuevo.',
-      ),
+      onError: (error) =>
+          _mostrarError('No se pudo reconocer la voz. Intenta de nuevo.'),
     );
 
     if (!mounted) return;

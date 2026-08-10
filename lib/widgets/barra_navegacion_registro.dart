@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/teclado.dart';
+
 /// Barra inferior del cuestionario: regresar a la izquierda, logo Bepensa
 /// al centro y continuar a la derecha.
 class BarraNavegacionRegistro extends StatelessWidget {
@@ -36,7 +38,10 @@ class BarraNavegacionRegistro extends StatelessWidget {
   Widget _buildBoton({required String icono, required VoidCallback onTap}) {
     return InkWell(
       borderRadius: BorderRadius.circular(28),
-      onTap: onTap,
+      onTap: () {
+        ocultarTeclado();
+        onTap();
+      },
       child: Padding(
         padding: const EdgeInsets.fromLTRB(8, 4, 8, 6),
         child: Image.asset(icono, width: 32, height: 40),

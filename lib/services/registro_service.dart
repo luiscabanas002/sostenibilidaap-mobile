@@ -2,6 +2,14 @@ import '../core/network/api_client.dart';
 import '../models/catalogos_registro.dart';
 import '../models/proceso.dart';
 
+/// El alta no se guardó aunque la petición haya respondido 200.
+/// [mensaje] trae la explicación del backend cuando la manda.
+class RegistroRechazadoException implements Exception {
+  RegistroRechazadoException([this.mensaje]);
+
+  final String? mensaje;
+}
+
 class RegistroService {
   /// Países, puestos y divisiones para los selectores del formulario.
   Future<CatalogosRegistro> getCatalogos() async {
@@ -49,6 +57,13 @@ class RegistroService {
     );
 
     final data = response.data;
-    return data is Map<String, dynamic> ? data['mensaje'] as String? : null;
+    if (data is! Map<String, dynamic>) return null;
+
+    final mensaje = data['mensaje'] as String?;
+    // El backend puede rechazar el alta respondiendo 200 con success en false.
+    if (data['success'] == false) {
+      throw RegistroRechazadoException(mensaje);
+    }
+    return mensaje;
   }
 }

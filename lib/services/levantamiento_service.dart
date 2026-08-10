@@ -7,7 +7,9 @@ import 'push_service.dart';
 class LevantamientoService {
   /// Arma el cuerpo que espera el backend. Se usa igual para el envío directo
   /// y para guardar el levantamiento en el dispositivo cuando no hay conexión.
-  Future<Map<String, dynamic>> construirCuerpo(RegistroBorrador borrador) async {
+  Future<Map<String, dynamic>> construirCuerpo(
+    RegistroBorrador borrador,
+  ) async {
     final tema = RegistroTema.de(borrador.idTipoFactor);
     final token = await PushService.instance.obtenerToken() ?? '';
     final maquinaEquipo = _maquinaEquipo(borrador, tema);

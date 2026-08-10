@@ -5,7 +5,8 @@ const double kTabletBreakpoint = 600;
 
 /// Utilidades de diseño responsivo para distinguir celular y tablet.
 extension ResponsiveContext on BuildContext {
-  bool get isTablet => MediaQuery.sizeOf(this).shortestSide >= kTabletBreakpoint;
+  bool get isTablet =>
+      MediaQuery.sizeOf(this).shortestSide >= kTabletBreakpoint;
 
   bool get isMobile => !isTablet;
 }

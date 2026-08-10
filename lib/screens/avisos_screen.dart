@@ -36,9 +36,9 @@ class _AvisosScreenState extends State<AvisosScreen> {
   }
 
   void _abrirAviso(Aviso aviso) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => VisorAvisoScreen(aviso: aviso)),
-    );
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => VisorAvisoScreen(aviso: aviso)));
   }
 
   @override
@@ -135,11 +135,7 @@ class _AvisosScreenState extends State<AvisosScreen> {
                   ],
                 ),
               ),
-              const Icon(
-                Icons.chevron_right,
-                color: Colors.black26,
-                size: 26,
-              ),
+              const Icon(Icons.chevron_right, color: Colors.black26, size: 26),
             ],
           ),
         ),
@@ -239,9 +235,7 @@ class VisorAvisoScreen extends StatelessWidget {
                     loadingBuilder: (context, child, progress) {
                       if (progress == null) return child;
                       return const Center(
-                        child: CircularProgressIndicator(
-                          color: kAcenteNaranja,
-                        ),
+                        child: CircularProgressIndicator(color: kAcenteNaranja),
                       );
                     },
                     errorBuilder: (_, _, _) => const Center(

@@ -5,6 +5,7 @@ import '../models/division.dart';
 import '../models/usuario.dart';
 import '../services/division_service.dart';
 import '../services/usuario_service.dart';
+import '../utils/teclado.dart';
 import 'campos_formulario.dart';
 import 'lista_picker_dialog.dart';
 import 'pantalla_naranja.dart';
@@ -92,7 +93,7 @@ class _ValidarUsuarioDialogState extends State<_ValidarUsuarioDialog> {
   }
 
   Future<void> _validar() async {
-    FocusManager.instance.primaryFocus?.unfocus();
+    ocultarTeclado();
     if (_validando) return;
 
     final division = _division;

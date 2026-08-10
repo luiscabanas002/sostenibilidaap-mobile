@@ -231,8 +231,7 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
           icono: '$_iconosPath/ic_maquinaria_eq.png',
           control: _buildControlMaquinaria(),
         ),
-      if (_config.muestraSifp && _config.sifpAntesDeTipo)
-        _buildCampoSifp(),
+      if (_config.muestraSifp && _config.sifpAntesDeTipo) _buildCampoSifp(),
       _buildCampo(
         icono: '$_iconosPath/ic_comportamiento.png',
         control: _buildSelectorPill(
@@ -241,8 +240,7 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
           onTap: _seleccionarTipoComportamiento,
         ),
       ),
-      if (_config.muestraSifp && !_config.sifpAntesDeTipo)
-        _buildCampoSifp(),
+      if (_config.muestraSifp && !_config.sifpAntesDeTipo) _buildCampoSifp(),
     ];
 
     return Scaffold(
@@ -463,8 +461,7 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
               separatorBuilder: (_, _) => const SizedBox(width: 4),
               itemBuilder: (context, index) {
                 final area = _areas[index];
-                final seleccionada =
-                    _areaSeleccionada?.idArea == area.idArea;
+                final seleccionada = _areaSeleccionada?.idArea == area.idArea;
                 return _buildItemIcono(
                   nombre: area.nombre,
                   pathIcono: area.pathIcono,
@@ -589,5 +586,4 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
       ),
     );
   }
-
 }

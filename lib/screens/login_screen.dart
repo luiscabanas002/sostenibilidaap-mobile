@@ -5,6 +5,7 @@ import '../services/division_service.dart';
 import '../services/offline_store.dart';
 import '../services/usuario_service.dart';
 import '../utils/responsive.dart';
+import '../utils/teclado.dart';
 import '../widgets/option_picker_dialog.dart';
 import 'avisos_screen.dart';
 import 'formulario_registro_screen.dart';
@@ -477,10 +478,17 @@ class _LoginScreenState extends State<LoginScreen> {
     required bool loading,
     required VoidCallback? onPressed,
   }) {
+    final accion = onPressed;
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: onPressed,
+        onPressed: accion == null
+            ? null
+            : () {
+                ocultarTeclado();
+                accion();
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: _accentOrange,
           foregroundColor: Colors.white,
@@ -574,7 +582,10 @@ class _LoginScreenState extends State<LoginScreen> {
     required VoidCallback onPressed,
   }) {
     return ElevatedButton(
-      onPressed: onPressed,
+      onPressed: () {
+        ocultarTeclado();
+        onPressed();
+      },
       style: ElevatedButton.styleFrom(
         backgroundColor: Colors.white,
         foregroundColor: Colors.black87,
@@ -601,7 +612,10 @@ class _LoginScreenState extends State<LoginScreen> {
     required VoidCallback onTap,
   }) {
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        ocultarTeclado();
+        onTap();
+      },
       borderRadius: BorderRadius.circular(12),
       child: Padding(
         padding: const EdgeInsets.all(8),

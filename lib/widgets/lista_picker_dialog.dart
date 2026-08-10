@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../utils/teclado.dart';
+
 /// Diálogo genérico para elegir un elemento de una lista, con buscador que
 /// filtra conforme se escribe.
 Future<T?> showListaPickerDialog<T>(
@@ -10,7 +12,7 @@ Future<T?> showListaPickerDialog<T>(
 }) {
   // Se quita el foco del input activo (no del scope) antes de abrir: si no,
   // al cerrarse el diálogo el foco regresa a ese input y el teclado reaparece.
-  FocusManager.instance.primaryFocus?.unfocus();
+  ocultarTeclado();
 
   return showDialog<T>(
     context: context,

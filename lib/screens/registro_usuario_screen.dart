@@ -8,7 +8,9 @@ import '../models/catalogos_registro.dart';
 import '../models/division.dart';
 import '../models/proceso.dart';
 import '../services/registro_service.dart';
+import '../utils/teclado.dart';
 import '../widgets/campos_formulario.dart';
+import '../widgets/dialogos_registro.dart';
 import '../widgets/lista_picker_dialog.dart';
 import '../widgets/pantalla_naranja.dart';
 
@@ -244,7 +246,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
   }
 
   Future<void> _registrar() async {
-    FocusManager.instance.primaryFocus?.unfocus();
+    ocultarTeclado();
     if (_enviando) return;
 
     if (!_camposTextoCompletos || !_selectoresCompletos) {
@@ -279,27 +281,35 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
       );
 
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(mensaje ?? 'Registro enviado correctamente.')),
-      );
-      Navigator.of(context).pop();
-    } on DioException catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _enviando = false;
-      });
-      ScaffoldMessenger.of(
+      await showMensajeRegistroDialog(
         context,
-      ).showSnackBar(SnackBar(content: Text(_mensajeDeError(error))));
-    } catch (error) {
-      if (!mounted) return;
-      setState(() {
-        _enviando = false;
-      });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se pudo completar el registro.')),
+        titulo: 'Registro exitoso',
+        mensaje: mensaje ?? 'Tu registro se envió correctamente.',
       );
+
+      // Solo al aceptar el diálogo se cierra la pantalla.
+      if (mounted) Navigator.of(context).pop();
+    } on RegistroRechazadoException catch (error) {
+      await _avisarFallo(error.mensaje ?? 'No se pudo completar el registro.');
+    } on DioException catch (error) {
+      await _avisarFallo(_mensajeDeError(error));
+    } catch (error) {
+      await _avisarFallo('No se pudo completar el registro.');
     }
+  }
+
+  /// Si falla se queda en la pantalla con los datos ya capturados.
+  Future<void> _avisarFallo(String mensaje) async {
+    if (!mounted) return;
+    setState(() {
+      _enviando = false;
+    });
+
+    await showMensajeRegistroDialog(
+      context,
+      titulo: 'No se pudo registrar',
+      mensaje: mensaje,
+    );
   }
 
   /// Si el backend explica el rechazo (clave duplicada, etc.) se muestra tal cual.

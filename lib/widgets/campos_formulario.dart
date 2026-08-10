@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../utils/teclado.dart';
 import 'pantalla_naranja.dart';
 
 /// Decoración compartida por los campos de las pantallas con fondo naranja.
@@ -28,7 +29,9 @@ InputDecoration decoracionCampo({
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
-      borderSide: BorderSide(color: habilitado ? Colors.black38 : Colors.black12),
+      borderSide: BorderSide(
+        color: habilitado ? Colors.black38 : Colors.black12,
+      ),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(16),
@@ -119,10 +122,17 @@ class BotonAccion extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accion = onPressed;
+
     return SizedBox(
       width: double.infinity,
       child: ElevatedButton(
-        onPressed: cargando ? null : onPressed,
+        onPressed: cargando || accion == null
+            ? null
+            : () {
+                ocultarTeclado();
+                accion();
+              },
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
           foregroundColor: Colors.white,
