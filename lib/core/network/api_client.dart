@@ -17,9 +17,9 @@ class ApiClient {
   /// El emulador de Android expone el localhost de la máquina en 10.0.2.2.
   static String get serverBaseUrl {
     if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:5093';
+      return 'http://app.bepensa-web.com:802';
     }
-    return 'http://localhost:5093';
+    return 'http://app.bepensa-web.com:802';
   }
 
   static String get baseUrl => '$serverBaseUrl/api';
