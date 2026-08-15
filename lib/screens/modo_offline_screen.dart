@@ -116,9 +116,7 @@ class _ModoOfflineScreenState extends State<ModoOfflineScreen> {
   }
 
   void _avisar(String mensaje) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(mensaje)));
+    showMensajeRegistroDialog(context, titulo: 'Aviso', mensaje: mensaje);
   }
 
   @override
@@ -250,26 +248,32 @@ class _ModoOfflineScreenState extends State<ModoOfflineScreen> {
 
     return TarjetaBlanca(
       padding: const EdgeInsets.fromLTRB(20, 8, 12, 8),
-      child: SwitchListTile(
-        contentPadding: EdgeInsets.zero,
-        value: _store.activo,
-        onChanged: habilitado ? _cambiarModo : null,
-        activeThumbColor: Colors.white,
-        activeTrackColor: kAcenteNaranja,
-        title: const Text(
-          'Trabajar sin conexión',
-          style: TextStyle(
-            color: Colors.black87,
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
+      child: Material(
+        // El Container de TarjetaBlanca tiene color de fondo y quedaría
+        // entre el SwitchListTile y el Material más cercano, tapando su
+        // ripple; este Material transparente evita esa advertencia.
+        type: MaterialType.transparency,
+        child: SwitchListTile(
+          contentPadding: EdgeInsets.zero,
+          value: _store.activo,
+          onChanged: habilitado ? _cambiarModo : null,
+          activeThumbColor: Colors.white,
+          activeTrackColor: kAcenteNaranja,
+          title: const Text(
+            'Trabajar sin conexión',
+            style: TextStyle(
+              color: Colors.black87,
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-        subtitle: Text(
-          habilitado
-              ? 'Los registros se guardan en el dispositivo hasta que los '
-                    'sincronices.'
-              : 'Disponible después de descargar la información.',
-          style: const TextStyle(color: Colors.black54, fontSize: 14),
+          subtitle: Text(
+            habilitado
+                ? 'Los registros se guardan en el dispositivo hasta que los '
+                      'sincronices.'
+                : 'Disponible después de descargar la información.',
+            style: const TextStyle(color: Colors.black54, fontSize: 14),
+          ),
         ),
       ),
     );

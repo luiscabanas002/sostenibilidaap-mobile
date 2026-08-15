@@ -104,10 +104,10 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
       setState(() {
         _cargandoProcesos = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('No se pudo cargar la información de la división.'),
-        ),
+      showMensajeRegistroDialog(
+        context,
+        titulo: 'No se pudo continuar',
+        mensaje: 'No se pudo cargar la información de la división.',
       );
     }
   }
@@ -251,11 +251,10 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
 
     if (!_camposTextoCompletos || !_selectoresCompletos) {
       setState(_mostrarErroresUnosSegundos);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Completa todos los campos.'),
-          duration: Duration(seconds: 5),
-        ),
+      showMensajeRegistroDialog(
+        context,
+        titulo: 'Faltan datos',
+        mensaje: 'Completa todos los campos.',
       );
       return;
     }

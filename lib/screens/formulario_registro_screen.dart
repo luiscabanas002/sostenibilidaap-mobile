@@ -180,10 +180,10 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
     ];
 
     if (faltantes.isNotEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Faltan campos requeridos: ${faltantes.join(', ')}'),
-        ),
+      showMensajeRegistroDialog(
+        context,
+        titulo: 'Faltan datos',
+        mensaje: 'Faltan campos requeridos: ${faltantes.join(', ')}',
       );
       return;
     }

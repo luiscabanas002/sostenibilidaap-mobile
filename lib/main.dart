@@ -12,6 +12,7 @@ import 'screens/splash_screen.dart';
 import 'services/offline_store.dart';
 import 'services/push_service.dart';
 import 'utils/responsive.dart';
+import 'widgets/pantalla_naranja.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,6 +41,11 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'Sostenibilidapp',
       debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(foregroundColor: kAcenteNaranja),
+        ),
+      ),
       initialRoute: SplashScreen.routeName,
       routes: {
         SplashScreen.routeName: (_) => const SplashScreen(),

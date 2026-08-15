@@ -122,9 +122,11 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
     } catch (error) {
       if (!mounted) return;
       Navigator.of(context).pop();
-      ScaffoldMessenger.of(
+      showMensajeRegistroDialog(
         context,
-      ).showSnackBar(SnackBar(content: Text(_mensajeDeError(error))));
+        titulo: 'No se pudo enviar',
+        mensaje: _mensajeDeError(error),
+      );
     } finally {
       if (mounted) {
         setState(() {

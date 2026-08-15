@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../models/division.dart';
 import '../services/division_service.dart';
@@ -6,6 +7,7 @@ import '../services/offline_store.dart';
 import '../services/usuario_service.dart';
 import '../utils/responsive.dart';
 import '../utils/teclado.dart';
+import '../widgets/dialogos_registro.dart';
 import '../widgets/option_picker_dialog.dart';
 import 'avisos_screen.dart';
 import 'formulario_registro_screen.dart';
@@ -96,12 +98,10 @@ class _LoginScreenState extends State<LoginScreen> {
     } catch (error) {
       if (!mounted) return;
       setState(() => _loadingDivisions = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'No se pudieron cargar las divisiones. Intenta de nuevo.',
-          ),
-        ),
+      showMensajeRegistroDialog(
+        context,
+        titulo: 'No se pudo continuar',
+        mensaje: 'No se pudieron cargar las divisiones. Intenta de nuevo.',
       );
       return;
     }
@@ -162,17 +162,17 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     } on ClaveNoEncontradaException {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No se encontró la clave del empleado')),
+      showMensajeRegistroDialog(
+        context,
+        titulo: 'No se pudo continuar',
+        mensaje: 'No se encontró la clave del empleado',
       );
     } catch (error) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-            'Ocurrió un error al iniciar sesión. Intenta de nuevo.',
-          ),
-        ),
+      showMensajeRegistroDialog(
+        context,
+        titulo: 'No se pudo continuar',
+        mensaje: 'Ocurrió un error al iniciar sesión. Intenta de nuevo.',
       );
     } finally {
       if (mounted) setState(() => _authAction = null);
@@ -412,6 +412,11 @@ class _LoginScreenState extends State<LoginScreen> {
       controller: _codeController,
       cursorColor: _accentOrange,
       style: const TextStyle(color: Colors.black87, fontSize: 18),
+      keyboardType: TextInputType.number,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+        LengthLimitingTextInputFormatter(10),
+      ],
       onChanged: (_) => setState(() {}),
       decoration: InputDecoration(
         labelText: 'Código',

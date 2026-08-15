@@ -7,6 +7,7 @@ import '../services/division_service.dart';
 import '../services/usuario_service.dart';
 import '../utils/teclado.dart';
 import 'campos_formulario.dart';
+import 'dialogos_registro.dart';
 import 'lista_picker_dialog.dart';
 import 'pantalla_naranja.dart';
 
@@ -117,6 +118,24 @@ class _ValidarUsuarioDialogState extends State<_ValidarUsuarioDialog> {
         clave: clave,
       );
       if (!mounted) return;
+
+      final confirmado = await showConfirmacionDialog(
+        context,
+        titulo: 'Confirmar usuario',
+        mensaje: '¿Los datos corresponden a ${usuario.nombre}?',
+        textoNegativo: 'NO, ES OTRO',
+        textoPositivo: 'CONFIRMAR',
+      );
+      if (!mounted) return;
+
+      if (!confirmado) {
+        setState(() {
+          _validando = false;
+          _codigoController.clear();
+        });
+        return;
+      }
+
       Navigator.of(context).pop<UsuarioValidado>(
         UsuarioValidado(usuario: usuario, division: division),
       );
@@ -172,7 +191,10 @@ class _ValidarUsuarioDialogState extends State<_ValidarUsuarioDialog> {
             TextField(
               controller: _codigoController,
               keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              inputFormatters: [
+                FilteringTextInputFormatter.digitsOnly,
+                LengthLimitingTextInputFormatter(10),
+              ],
               cursorColor: kAcenteNaranja,
               style: const TextStyle(color: Colors.black87, fontSize: 17),
               decoration: decoracionCampo(
@@ -202,7 +224,7 @@ class _ValidarUsuarioDialogState extends State<_ValidarUsuarioDialog> {
                     : () => Navigator.of(context).pop(),
                 child: const Text(
                   'CANCELAR',
-                  style: TextStyle(color: Colors.black54, letterSpacing: 1),
+                  style: TextStyle(color: kAcenteNaranja, letterSpacing: 1),
                 ),
               ),
             ),
