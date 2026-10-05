@@ -32,6 +32,20 @@ android {
         versionName = flutter.versionName
     }
 
+    flavorDimensions += "brand"
+    productFlavors {
+        create("bepensa") {
+            dimension = "brand"
+            applicationId = "com.bepensa.sostenibilidaap"
+            resValue("string", "app_name", "Sostenibilidapp")
+        }
+        create("tijuana") {
+            dimension = "brand"
+            applicationId = "com.gen.cdf"
+            resValue("string", "app_name", "Reporta-CDF")
+        }
+    }
+
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.

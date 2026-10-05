@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/flavor_config.dart';
 import '../models/division.dart';
 import '../services/division_service.dart';
 import '../services/offline_store.dart';
@@ -249,7 +250,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     const SizedBox(width: 24),
                                     Expanded(
                                       child: _buildPillButton(
-                                        label: 'MODO OFFLINE',
+                                        label: FlavorConfig.current.modoOfflineBoton,
                                         onPressed: _abrirModoOffline,
                                       ),
                                     ),
@@ -289,7 +290,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Padding(
                               padding: const EdgeInsets.only(bottom: 8),
                               child: Image.asset(
-                                'assets/images/logo_bepensa.png',
+                                FlavorConfig.current.logoAsset,
                                 height: 26,
                               ),
                             ),
@@ -308,16 +309,16 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget _buildAvisoOffline() {
-    return const Padding(
-      padding: EdgeInsets.only(top: 4),
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.cloud_off, color: Colors.white, size: 18),
-          SizedBox(width: 6),
+          const Icon(Icons.cloud_off, color: Colors.white, size: 18),
+          const SizedBox(width: 6),
           Text(
-            'Modo offline activo',
-            style: TextStyle(
+            '${FlavorConfig.current.modoOfflineTitulo} activo',
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 14,
               fontWeight: FontWeight.w500,
@@ -385,7 +386,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ] else ...[
             const SizedBox(height: 16),
             _buildPickerField(
-              label: 'División',
+              label: FlavorConfig.current.divisionLabel,
               icon: Icons.factory,
               value: _selectedDivision?.descripcion,
               onTap: _showDivisionPicker,
@@ -419,7 +420,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ],
       onChanged: (_) => setState(() {}),
       decoration: InputDecoration(
-        labelText: 'Código',
+        labelText: FlavorConfig.current.codigoLabel,
         labelStyle: const TextStyle(color: Colors.black54, fontSize: 18),
         prefixIcon: const Padding(
           padding: EdgeInsets.symmetric(horizontal: 12),
@@ -450,7 +451,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final enabled = hasCode && _authAction == null;
 
     return _buildAuthButton(
-      label: 'VALIDAR CÓDIGO',
+      label: FlavorConfig.current.validarCodigoLabel,
       loading: _authAction == 'code',
       onPressed: enabled
           ? () => _login(clave: _codeController.text.trim(), action: 'code')
@@ -460,7 +461,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Widget _buildOfflineButton() {
     return _buildAuthButton(
-      label: 'INGRESAR EN MODO OFFLINE',
+      label: 'INGRESAR EN ${FlavorConfig.current.modoOfflineTitulo.toUpperCase()}',
       loading: _authAction == 'offline',
       onPressed: _authAction == null
           ? () => _login(clave: UsuarioService.claveInvitado, action: 'offline')

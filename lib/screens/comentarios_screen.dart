@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../core/registro_tema.dart';
 import '../models/registro_borrador.dart';
 import '../services/levantamiento_service.dart';
@@ -32,7 +33,10 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
 
   bool _enviando = false;
 
-  RegistroTema get _tema => RegistroTema.de(widget.borrador.idTipoFactor);
+  RegistroTema get _tema => FlavorConfig.current.aplicarTextos(
+    RegistroTema.de(widget.borrador.idTipoFactor),
+    widget.borrador.idTipoFactor,
+  );
 
   @override
   void initState() {
@@ -115,7 +119,7 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
                 : mensaje,
             mensaje: OfflineStore.instance.activo
                 ? 'Sincroniza desde Modo offline cuando tengas conexión.'
-                : 'Gracias por hacer de Bepensa un lugar más seguro para trabajar.',
+                : FlavorConfig.current.graciasMensaje,
           ),
         ),
       );
@@ -173,12 +177,16 @@ class _ComentariosScreenState extends State<ComentariosScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(_tema.fondoAsset(esTablet: context.isTablet)),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: FlavorConfig.current.useSolidBackgrounds
+            ? BoxDecoration(color: _tema.acento)
+            : BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    _tema.fondoAsset(esTablet: context.isTablet),
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
         child: SafeArea(
           bottom: false,
           child: Center(

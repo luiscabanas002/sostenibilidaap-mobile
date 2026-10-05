@@ -47,6 +47,21 @@ class RegistroTema {
   final bool sifpAntesDeTipo;
   final bool muestraMaquinaria;
 
+  RegistroTema copyWith({String? titulo, String? gridTitulo}) => RegistroTema(
+    titulo: titulo ?? this.titulo,
+    tipoLevantamiento: tipoLevantamiento,
+    tipoArea: tipoArea,
+    fondo: fondo,
+    fondoSalida: fondoSalida,
+    gridTitulo: gridTitulo ?? this.gridTitulo,
+    acento: acento,
+    acentoBoton: acentoBoton,
+    iconoMicro: iconoMicro,
+    muestraSifp: muestraSifp,
+    sifpAntesDeTipo: sifpAntesDeTipo,
+    muestraMaquinaria: muestraMaquinaria,
+  );
+
   String fondoAsset({required bool esTablet}) =>
       'assets/images/${fondo}_${esTablet ? 'tablet' : 'mobile'}.png';
 

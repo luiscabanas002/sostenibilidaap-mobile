@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'core/flavor_config.dart';
+import 'flavors.dart';
 import 'screens/avisos_screen.dart';
 import 'screens/login_screen.dart';
 import 'screens/modo_offline_screen.dart';
@@ -14,7 +16,10 @@ import 'services/push_service.dart';
 import 'utils/responsive.dart';
 import 'widgets/pantalla_naranja.dart';
 
-Future<void> main() async {
+Future<void> main() => mainCommon(Flavor.bepensa);
+
+Future<void> mainCommon(Flavor flavor) async {
+  F.appFlavor = flavor;
   WidgetsFlutterBinding.ensureInitialized();
 
   await SystemChrome.setPreferredOrientations(
@@ -39,7 +44,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Sostenibilidapp',
+      title: FlavorConfig.current.appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         textButtonTheme: TextButtonThemeData(

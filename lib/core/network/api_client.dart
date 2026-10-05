@@ -1,7 +1,7 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+
+import '../flavor_config.dart';
 
 /// Cliente HTTP central de la app. Todos los servicios deben usar
 /// [ApiClient.dio] para heredar la URL base, timeouts y logging.
@@ -12,15 +12,8 @@ class ApiClient {
 
   /// Host base del backend, sin sufijo `/api`. Es la fuente única de verdad
   /// para armar tanto [baseUrl] como la URL base de recursos estáticos
-  /// (ver [kMediaBaseUrl] en `core/media.dart`).
-  ///
-  /// El emulador de Android expone el localhost de la máquina en 10.0.2.2.
-  static String get serverBaseUrl {
-    if (!kIsWeb && Platform.isAndroid) {
-      return 'http://app.bepensa-web.com:802';
-    }
-    return 'http://app.bepensa-web.com:802';
-  }
+  /// (ver [kMediaBaseUrl] en `core/media.dart`). Depende del flavor activo.
+  static String get serverBaseUrl => FlavorConfig.current.serverBaseUrl;
 
   static String get baseUrl => '$serverBaseUrl/api';
 

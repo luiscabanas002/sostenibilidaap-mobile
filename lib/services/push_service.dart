@@ -5,16 +5,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../core/flavor_config.dart';
 import '../firebase_options.dart';
 import 'dispositivo_service.dart';
 
-/// Canal de Android donde caen los avisos. El mismo id se declara en el
-/// manifiesto para que las notificaciones que llegan con la app cerrada
-/// usen esta importancia y no la de un canal por omisión.
-const AndroidNotificationChannel kCanalAvisos = AndroidNotificationChannel(
+/// Canal de Android donde caen los avisos. El id es el mismo en todos los
+/// flavors y se declara igual en el manifiesto para que las notificaciones
+/// que llegan con la app cerrada usen esta importancia y no la de un canal
+/// por omisión; nombre y descripción sí cambian por flavor.
+AndroidNotificationChannel get kCanalAvisos => AndroidNotificationChannel(
   'sostenibilidaap_avisos',
-  'Avisos',
-  description: 'Avisos y recordatorios de Sostenibilidapp.',
+  FlavorConfig.current.notificationChannelName,
+  description: FlavorConfig.current.notificationChannelDescription,
   importance: Importance.high,
 );
 

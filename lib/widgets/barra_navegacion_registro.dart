@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../utils/teclado.dart';
 
-/// Barra inferior del cuestionario: regresar a la izquierda, logo Bepensa
-/// al centro y continuar a la derecha.
+/// Barra inferior del cuestionario: regresar a la izquierda, logo del
+/// flavor activo al centro y continuar a la derecha.
 class BarraNavegacionRegistro extends StatelessWidget {
   const BarraNavegacionRegistro({
     super.key,
@@ -27,7 +28,7 @@ class BarraNavegacionRegistro extends StatelessWidget {
           _buildBoton(icono: '$_iconosPath/ic_left.png', onTap: onAtras),
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Image.asset('assets/images/logo_bepensa.png', height: 30),
+            child: Image.asset(FlavorConfig.current.logoAsset, height: 30),
           ),
           _buildBoton(icono: '$_iconosPath/ic_right.png', onTap: onContinuar),
         ],

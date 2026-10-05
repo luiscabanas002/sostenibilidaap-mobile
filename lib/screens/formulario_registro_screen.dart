@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../core/media.dart';
 import '../core/registro_tema.dart';
 import '../models/division.dart';
@@ -46,7 +47,10 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
   Area? _areaSeleccionada;
   Factor? _factorSeleccionado;
 
-  RegistroTema get _config => RegistroTema.de(widget.idTipoFactor);
+  RegistroTema get _config => FlavorConfig.current.aplicarTextos(
+    RegistroTema.de(widget.idTipoFactor),
+    widget.idTipoFactor,
+  );
 
   TipoFactor? get _tipoFactor =>
       widget.usuario.tipoFactorDe(widget.idTipoFactor);
@@ -245,9 +249,14 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
 
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(image: AssetImage(fondo), fit: BoxFit.cover),
-        ),
+        decoration: FlavorConfig.current.useSolidBackgrounds
+            ? BoxDecoration(color: _config.acento)
+            : BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(fondo),
+                  fit: BoxFit.cover,
+                ),
+              ),
         child: SafeArea(
           bottom: false,
           child: Center(
@@ -549,7 +558,7 @@ class _FormularioRegistroScreenState extends State<FormularioRegistroScreen> {
                     height: 56,
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => Image.asset(
-                      '$_iconosPath/ic_default_bepensa.png',
+                      FlavorConfig.current.defaultFactorIconAsset,
                       width: 56,
                       height: 56,
                     ),

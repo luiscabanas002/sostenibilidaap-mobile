@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../services/levantamiento_service.dart';
 import '../services/offline_store.dart';
 import '../services/usuario_service.dart';
@@ -70,7 +71,7 @@ class _ModoOfflineScreenState extends State<ModoOfflineScreen> {
     if (_store.activo) {
       final continuar = await showConfirmacionDialog(
         context,
-        titulo: 'Modo offline activo',
+        titulo: '${FlavorConfig.current.modoOfflineTitulo} activo',
         mensaje: 'Para sincronizar se necesita conexión. ¿Deseas continuar?',
         textoNegativo: 'CANCELAR',
         textoPositivo: 'CONTINUAR',
@@ -122,7 +123,7 @@ class _ModoOfflineScreenState extends State<ModoOfflineScreen> {
   @override
   Widget build(BuildContext context) {
     return PantallaNaranja(
-      titulo: 'Modo offline',
+      titulo: FlavorConfig.current.modoOfflineTitulo,
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         children: [

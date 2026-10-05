@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../core/registro_tema.dart';
 import '../models/registro_borrador.dart';
 import '../utils/responsive.dart';
@@ -10,8 +11,7 @@ class ResumenMovimientosScreen extends StatelessWidget {
     super.key,
     required this.borrador,
     this.titulo = '¡Ya terminaste!',
-    this.mensaje =
-        'Gracias por hacer de Bepensa un lugar más seguro para trabajar.',
+    this.mensaje,
   });
 
   static const routeName = '/resumen-movimientos';
@@ -20,9 +20,14 @@ class ResumenMovimientosScreen extends StatelessWidget {
 
   /// Lo manda comentarios con el mensaje que devuelve el backend.
   final String titulo;
-  final String mensaje;
 
-  RegistroTema get _tema => RegistroTema.de(borrador.idTipoFactor);
+  /// Si no se manda, cae en el mensaje de agradecimiento del flavor activo.
+  final String? mensaje;
+
+  RegistroTema get _tema => FlavorConfig.current.aplicarTextos(
+    RegistroTema.de(borrador.idTipoFactor),
+    borrador.idTipoFactor,
+  );
 
   void _salir(BuildContext context) {
     Navigator.of(
@@ -34,14 +39,16 @@ class ResumenMovimientosScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage(
-              _tema.fondoSalidaAsset(esTablet: context.isTablet),
-            ),
-            fit: BoxFit.cover,
-          ),
-        ),
+        decoration: FlavorConfig.current.useSolidBackgrounds
+            ? BoxDecoration(color: _tema.acento)
+            : BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(
+                    _tema.fondoSalidaAsset(esTablet: context.isTablet),
+                  ),
+                  fit: BoxFit.cover,
+                ),
+              ),
         child: SafeArea(
           child: Column(
             children: [
@@ -92,7 +99,7 @@ class ResumenMovimientosScreen extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           Text(
-            mensaje,
+            mensaje ?? FlavorConfig.current.graciasMensaje,
             textAlign: TextAlign.center,
             style: const TextStyle(color: Colors.black87, fontSize: 20),
           ),

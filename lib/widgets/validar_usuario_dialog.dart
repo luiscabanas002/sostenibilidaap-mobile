@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/flavor_config.dart';
 import '../models/division.dart';
 import '../models/usuario.dart';
 import '../services/division_service.dart';
@@ -182,7 +183,7 @@ class _ValidarUsuarioDialogState extends State<_ValidarUsuarioDialog> {
             ),
             const SizedBox(height: 20),
             CampoSelector(
-              etiqueta: 'División',
+              etiqueta: FlavorConfig.current.divisionLabel,
               icono: Icons.factory,
               valor: _division?.descripcion,
               cargando: _cargandoDivisiones,
@@ -198,7 +199,7 @@ class _ValidarUsuarioDialogState extends State<_ValidarUsuarioDialog> {
               cursorColor: kAcenteNaranja,
               style: const TextStyle(color: Colors.black87, fontSize: 17),
               decoration: decoracionCampo(
-                etiqueta: 'Código',
+                etiqueta: FlavorConfig.current.codigoLabel,
                 icono: Icons.badge,
               ),
             ),

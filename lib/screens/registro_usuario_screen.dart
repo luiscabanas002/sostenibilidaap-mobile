@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/flavor_config.dart';
 import '../models/catalogos_registro.dart';
 import '../models/division.dart';
 import '../models/proceso.dart';
@@ -370,7 +371,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
           children: [
             _buildCampoTexto(
               controller: _codigoController,
-              etiqueta: 'Código',
+              etiqueta: FlavorConfig.current.codigoLabel,
               icono: Icons.badge,
               soloDigitos: true,
             ),
@@ -385,7 +386,7 @@ class _RegistroUsuarioScreenState extends State<RegistroUsuarioScreen> {
               icono: Icons.person_outline,
             ),
             _buildSelector(
-              etiqueta: 'División',
+              etiqueta: FlavorConfig.current.divisionLabel,
               icono: Icons.factory,
               valor: _division?.descripcion,
               onTap: () => _seleccionarDivision(catalogos.divisiones),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../utils/responsive.dart';
 import 'barra_navegacion_registro.dart';
 
@@ -7,7 +8,7 @@ import 'barra_navegacion_registro.dart';
 const Color kAcenteNaranja = Color(0xFFEF8140);
 
 /// Estructura común de las pantallas secundarias del login: fondo naranja,
-/// flecha para regresar, título centrado y logo de Bepensa al final.
+/// flecha para regresar, título centrado y logo del flavor activo al final.
 class PantallaNaranja extends StatelessWidget {
   const PantallaNaranja({
     super.key,
@@ -43,7 +44,7 @@ class PantallaNaranja extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 8, bottom: 24),
                     child: Image.asset(
-                      'assets/images/logo_bepensa.png',
+                      FlavorConfig.current.logoAsset,
                       height: 26,
                     ),
                   ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../core/flavor_config.dart';
 import '../utils/responsive.dart';
 import 'login_screen.dart';
 
@@ -47,13 +48,13 @@ class _SplashScreenState extends State<SplashScreen> {
           fit: BoxFit.cover,
           errorBuilder: (context, error, stackTrace) {
             // Fallback si aún no se han agregado las imágenes al proyecto.
-            return const ColoredBox(
-              color: Color(0xFFF57C00),
+            return ColoredBox(
+              color: const Color(0xFFF57C00),
               child: Center(
                 child: Text(
-                  'Bepensa\n#UnidosPodemos',
+                  FlavorConfig.current.splashFallbackText,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: 28,
                     fontWeight: FontWeight.bold,

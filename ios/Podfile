@@ -8,6 +8,12 @@ project 'Runner', {
   'Debug' => :debug,
   'Profile' => :release,
   'Release' => :release,
+  'Debug-bepensa' => :debug,
+  'Profile-bepensa' => :release,
+  'Release-bepensa' => :release,
+  'Debug-tijuana' => :debug,
+  'Profile-tijuana' => :release,
+  'Release-tijuana' => :release,
 }
 
 def flutter_root
@@ -39,5 +45,13 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    # Algunos pods declaran un deployment target menor al mínimo del proyecto
+    # (15.0); Xcode recientes lo tratan como error, así que se sube aquí.
+    target.build_configurations.each do |config|
+      current = config.build_settings['IPHONEOS_DEPLOYMENT_TARGET']
+      if current && Gem::Version.new(current) < Gem::Version.new('15.0')
+        config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.0'
+      end
+    end
   end
 end
